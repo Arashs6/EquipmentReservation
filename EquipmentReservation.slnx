@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EquipmentReservation.Tests/EquipmentReservation.Tests.csproj" />
+  <Project Path="EquipmentReservation/EquipmentReservation.csproj" />
+</Solution>
