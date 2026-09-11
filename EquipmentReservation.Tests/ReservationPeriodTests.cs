@@ -16,7 +16,7 @@ public class ReservationPeriodTests
 
 	[Theory]
 	[MemberData(nameof(WithOverlap))]
-	public void When_period_has_overlap_return (ReservationPeriod period)
+	public void When_period_has_overlap_return_false (ReservationPeriod period)
     { 
 	    var reservationPeriod = Period(2, 5);
 
@@ -96,7 +96,7 @@ public record ReservationPeriod
 		{
 			if (ToDate <= FromDate)
 			{
-				throw new ArgumentException();
+				throw new ArgumentException("To date should always be later than from date");
 			}
 			this.FromDate = FromDate;
 			this.ToDate = ToDate;
@@ -108,7 +108,7 @@ public record ReservationPeriod
 
 		public bool HasNoOverlap (ReservationPeriod period)
 		{
-			return (period.FromDate < FromDate && period.ToDate <= FromDate) || (period.FromDate >= ToDate && period.ToDate > ToDate);
+			return period is null ? throw new ArgumentException("Reservation period can not be empty.") : (period.FromDate < FromDate && period.ToDate <= FromDate) || (period.FromDate >= ToDate && period.ToDate > ToDate);
 		}
 
 		
