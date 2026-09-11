@@ -32,19 +32,19 @@ namespace EquipmentReservation.Tests
 		public static TheoryData<ReservationPeriod> WithOverLap =>
 			new()
 			{
-				new ReservationPeriod( DateTime.Today.AddDays(1), DateTime.Today.AddDays(3)),
-				new ReservationPeriod( DateTime.Today.AddDays(3), DateTime.Today.AddDays(5)),
-				new ReservationPeriod( DateTime.Today.AddDays(3), DateTime.Today.AddDays(4)),
-				new ReservationPeriod (DateTime.Today.AddDays(1), DateTime.Today.AddDays(5)),
+				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(2), DateTimeOffset.UtcNow.AddDays(3)),
+				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(3), DateTimeOffset.UtcNow.AddDays(5)),
+				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(3), DateTimeOffset.UtcNow.AddDays(4)),
+				new ReservationPeriod (DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(5)),
 			};
 
 		public static TheoryData<ReservationPeriod> WithNoOverLap =>
 			new()
 			{
-				new ReservationPeriod( DateTime.Today.AddDays(1), DateTime.Today.AddDays(2)),
-				new ReservationPeriod( DateTime.Today.AddDays(1), DateTime.Today.AddDays(3)),
-				new ReservationPeriod( DateTime.Today.AddDays(5), DateTime.Today.AddDays(6)),
-				new ReservationPeriod( DateTime.Today.AddDays(6), DateTime.Today.AddDays(8)),
+				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(2)),
+				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(3)),
+				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(5), DateTimeOffset.UtcNow.AddDays(6)),
+				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(6), DateTimeOffset.UtcNow.AddDays(8)),
 			};
 	}
 }
@@ -52,7 +52,7 @@ namespace EquipmentReservation.Tests
 
 public record ReservationPeriod
 {
-		public ReservationPeriod(DateTime FromDate, DateTime ToDate)
+		public ReservationPeriod(DateTimeOffset FromDate, DateTimeOffset ToDate)
 		{
 			if (ToDate <= FromDate)
 			{
@@ -62,19 +62,15 @@ public record ReservationPeriod
 			this.ToDate = ToDate;
 		}
 
-		public DateTime FromDate { get;private set; }
-		public DateTime ToDate { get;private set; }
+		public DateTimeOffset FromDate { get;private set; }
+		public DateTimeOffset ToDate { get;private set; }
 
 
 		public bool hasNoOverlap (ReservationPeriod period)
 		{
-			return (period.FromDate < FromDate && period.ToDate <= FromDate) || (period.FromDate >= ToDate && period.ToDate > ToDate);
+			return (period.FromDate < FromDate && period.ToDate <= ToDate) || (period.FromDate >= ToDate && period.ToDate > ToDate);
 		}
 
-		public void Deconstruct(out DateTime FromDate, out DateTime ToDate)
-		{
-			FromDate = this.FromDate;
-			ToDate = this.ToDate;
-		}
+		
 	}
 
