@@ -5,12 +5,13 @@ namespace EquipmentReservation.Tests
 {
 	public class ReservationPeriodTests
 	{
+		private static DateTimeOffset FiveDaysLater { get; set; } = DateTimeOffset.UtcNow.AddDays(5);
 		[Theory]
 		[MemberData(nameof(WithOverLap))]
 		public void when_period_has_overLap_return_false(ReservationPeriod period)
 		{
 
-			var reservationPeriod = new ReservationPeriod(DateTime.Today.AddDays(2), DateTime.Today.AddDays(4));
+			var reservationPeriod = new ReservationPeriod(DateTimeOffset.UtcNow.AddDays(2), DateTimeOffset.UtcNow.AddDays(4));
 
 			var result = reservationPeriod.hasNoOverlap(period);
 
@@ -22,7 +23,7 @@ namespace EquipmentReservation.Tests
 		public void when_period_has_no_overLap_return_true (ReservationPeriod period)
 		{
 
-			var reservationPeriod = new ReservationPeriod(DateTime.Today.AddDays(3), DateTime.Today.AddDays(5));
+			var reservationPeriod = new ReservationPeriod(DateTimeOffset.UtcNow.AddDays(3), FiveDaysLater);
 
 			var result = reservationPeriod.hasNoOverlap(period);
 
@@ -33,19 +34,25 @@ namespace EquipmentReservation.Tests
 			new()
 			{
 				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(2), DateTimeOffset.UtcNow.AddDays(3)),
-				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(3), DateTimeOffset.UtcNow.AddDays(5)),
+				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(3), FiveDaysLater),
 				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(3), DateTimeOffset.UtcNow.AddDays(4)),
-				new ReservationPeriod (DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(5)),
+				new ReservationPeriod (DateTimeOffset.UtcNow.AddDays(1), FiveDaysLater),
 			};
 
-		public static TheoryData<ReservationPeriod> WithNoOverLap =>
-			new()
+		public static TheoryData<ReservationPeriod> WithNoOverLap
+		{
+			get
 			{
-				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(2)),
-				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(3)),
-				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(5), DateTimeOffset.UtcNow.AddDays(6)),
-				new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(6), DateTimeOffset.UtcNow.AddDays(8)),
-			};
+				
+				return new()
+				{
+					new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(2)),
+					new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(3)),
+					new ReservationPeriod(FiveDaysLater, DateTimeOffset.UtcNow.AddDays(6)),
+					new ReservationPeriod( DateTimeOffset.UtcNow.AddDays(6), DateTimeOffset.UtcNow.AddDays(8)),
+				};
+			}
+		}
 	}
 }
 
@@ -68,7 +75,7 @@ public record ReservationPeriod
 
 		public bool hasNoOverlap (ReservationPeriod period)
 		{
-			return (period.FromDate < FromDate && period.ToDate <= ToDate) || (period.FromDate >= ToDate && period.ToDate > ToDate);
+			return (period.FromDate < FromDate && period.ToDate <= FromDate) || (period.FromDate >= ToDate && period.ToDate > ToDate);
 		}
 
 		
