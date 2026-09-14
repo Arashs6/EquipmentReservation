@@ -2,7 +2,14 @@
 
 public class OrderItem
 {
-	public Guid Id { get; set; }
-	public Product Product { get; set; }
-
+	public OrderItem(Guid id, Guid equipmentId, ReservationPeriod reservationPeriod)
+	{
+		Id = id;
+		EquipmentId = equipmentId;
+		ReservationPeriod = reservationPeriod;
+	}
+	public Guid Id { get;private set; }
+	public Guid EquipmentId { get;private set; }
+	public ReservationPeriod ReservationPeriod { get;private set; }
 }
+

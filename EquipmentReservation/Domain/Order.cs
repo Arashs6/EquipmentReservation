@@ -6,6 +6,8 @@ public class Order
 	{
 		State = new DraftState();
 		OrderItems = new List<OrderItem>() ;
+		CreateDateTime = DateTimeOffset.UtcNow;
+		
 	}
 
 
@@ -30,5 +32,6 @@ public class Order
 	}
 
 	public OrderState State { get;private set; }
-	public List<OrderItem> OrderItems { get;private set; }
+	public IReadOnlyCollection<OrderItem> OrderItems { get;private set; }
+	public DateTimeOffset CreateDateTime { get;private set; }
 }

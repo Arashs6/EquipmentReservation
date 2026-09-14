@@ -57,10 +57,6 @@ public class OrderTests
 
 		order.State.Should().BeOfType(typeof(InvoicedState));
 	}
-
-
-
-
 }
 
 
