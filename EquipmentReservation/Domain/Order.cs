@@ -2,14 +2,31 @@
 
 public class Order
 {
+	private readonly List<OrderItem> _orderItems = new();
+
+	public OrderState State { get; private set; }
+	public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
+	public DateTimeOffset CreateDateTime { get; private set; }
+
 	public Order()
 	{
 		State = new DraftState();
-		OrderItems = new List<OrderItem>() ;
 		CreateDateTime = DateTimeOffset.UtcNow;
-		
 	}
 
+	public void AddItems(OrderItem items)
+	{
+		if (items is null)
+		{
+			throw new ArgumentNullException();
+		}
+
+		if (_orderItems.Any(a=>a.EquipmentId == items.EquipmentId) )
+		{
+			throw new InvalidOperationException();
+		}
+		_orderItems.AddRange(items);
+	}
 
 	public void SetState(OrderState state)
 	{
@@ -31,7 +48,5 @@ public class Order
 		State.Invoiced(this);
 	}
 
-	public OrderState State { get;private set; }
-	public IReadOnlyCollection<OrderItem> OrderItems { get;private set; }
-	public DateTimeOffset CreateDateTime { get;private set; }
+
 }

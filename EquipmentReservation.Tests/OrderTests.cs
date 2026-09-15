@@ -6,7 +6,7 @@ namespace EquipmentReservation.Tests;
 public class OrderTests
 {
 	private  Order order;
-
+	private DateTimeOffset date = new DateTimeOffset(2026,5,23,0,0,0,TimeSpan.Zero);
 	public OrderTests()
 	{
 		order = new Order();
@@ -57,6 +57,32 @@ public class OrderTests
 
 		order.State.Should().BeOfType(typeof(InvoicedState));
 	}
+
+	[Fact]
+	public void orderItem_should_not_be_null()
+	{
+		Order_Should_Create_With_Draft_State();
+
+		Action action = () => order.AddItems(null);
+
+		action.Should().Throw<ArgumentNullException>();
+	}
+
+	[Fact]
+	public void orderItem_should_throw_when_item_is_dupplicate()
+	{
+		Order_Should_Create_With_Draft_State();
+		var equipmentId = Guid.NewGuid();
+		order.AddItems(new OrderItem(Guid.NewGuid(), equipmentId, new ReservationPeriod(date,date.AddDays(1))));
+		Action action = ()=>
+		{
+			order.AddItems(new OrderItem(Guid.NewGuid(), equipmentId,
+				new ReservationPeriod(date, date.AddDays(1))));
+		};
+
+		action.Should().Throw<InvalidOperationException>();
+	}
+
 }
 
 
